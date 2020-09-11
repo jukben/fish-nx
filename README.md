@@ -6,6 +6,8 @@ This package contains [Nx (Extensible Dev Tools for Monorepos)](https://nx.dev) 
 
 > I recommend to use [Fisher](https://github.com/jorgebucaran/fisher) to install this package
 
+> This package uses [Jq](https://stedolan.github.io/jq/) so make sure you have it installed. Brew will do on OSX.
+
 ```
 fisher add jukben/fish-nx
 ```
