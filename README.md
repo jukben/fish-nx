@@ -12,7 +12,9 @@ fisher add jukben/fish-nx
 
 ## Usage
 
-Make sure you have `nx` installed globally. Then you should be able to leverage the autocomplete (also dynamic for `run` command).
+Make sure you have `nx` installed globally. Then you should be able to leverage the autocomplete (tab).
+
+[![asciicast](https://asciinema.org/a/nNxqT0rJ8H0MikTbrGNhwHTUz.svg)](https://asciinema.org/a/nNxqT0rJ8H0MikTbrGNhwHTUz)
 
 ## License
 
