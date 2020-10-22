@@ -18,6 +18,10 @@ Make sure you have `nx` installed globally. Then you should be able to leverage 
 
 [![asciicast](https://asciinema.org/a/nNxqT0rJ8H0MikTbrGNhwHTUz.svg)](https://asciinema.org/a/nNxqT0rJ8H0MikTbrGNhwHTUz)
 
+## Alternatives
+
+- For [Bash](https://gist.github.com/LeZuse/d17f258f69be632244970db77dadb58a) by [@lezuse](https://github.com/lezuse)
+
 ## License
 
 MIT
