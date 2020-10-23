@@ -5,8 +5,9 @@ function __nx_run
 end
 
 function __nx_workspace_schematic
-    if test -e tools/schematics/migrations.json; and type -q jq
-        jq -r '.schematics | keys | .[]' tools/schematics/migrations.json
+    if test -d tools/schematics
+        # very silly way how to get only folder name in format we want
+        ls -d tools/schematics/*/ | sed 's/.$//' | sed 's/tools\/schematics\///'
     end
 end
 
