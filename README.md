@@ -21,6 +21,7 @@ Make sure you have `nx` installed globally. Then you should be able to leverage 
 ## Alternatives
 
 - For [Bash](https://gist.github.com/LeZuse/d17f258f69be632244970db77dadb58a) by [@lezuse](https://github.com/lezuse)
+- For Zsh [nx-completion](https://github.com/jscutlery/nx-completion)
 
 ## License
 
