@@ -1,6 +1,6 @@
 function __nx_run
     if test -e workspace.json; and type -q jq
-        jq -r '.projects | to_entries | map("\(.key as $project | .value.architect | keys | map("\($project):\(.)") | .[])") | .[]' workspace.json
+        jq -r '.projects | to_entries | map("\(.key as $project | .value.targets | keys | map("\($project):\(.)") | .[])") | .[]' workspace.json
     end
 end
 
