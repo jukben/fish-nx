@@ -9,7 +9,7 @@ This package contains [Nx (Extensible Dev Tools for Monorepos)](https://nx.dev) 
 > This package uses [Jq](https://stedolan.github.io/jq/) so make sure you have it installed. Brew will do on OSX.
 
 ```
-fisher add jukben/fish-nx
+fisher install jukben/fish-nx
 ```
 
 ## Usage
