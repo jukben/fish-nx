@@ -1,5 +1,13 @@
 function __nx_run
-    if test -e workspace.json; and type -q jq
+    if test -e nx.json; and type -q jq
+        set -l allTargets
+        for file in (find . -path '*/node_modules/*' -prune -o -name 'project.json' -print)
+            set allTargets $allTargets (jq "{name: .name} as \$savedName | [.targets | to_entries[] | \$savedName.name + \":\" + .key]" $file)
+        end
+
+        # Combine all results into a single array and output
+        echo $allTargets | jq -r -s 'add | .[]'
+    else if test -e workspace.json; and type -q jq
         jq -r '.projects | to_entries | map("\(.key as $project | .value.targets | keys | map("\($project):\(.)") | .[])") | .[]' workspace.json
     end
 end
