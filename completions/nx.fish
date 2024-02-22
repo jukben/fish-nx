@@ -1,6 +1,6 @@
 function __nx_run
     if test -e nx.json; and type -q jq
-        if test -e .cache/nx/nxdeps.jsona
+        if test -e .cache/nx/nxdeps.json
             jq -r '.nodes | to_entries | map("\(.key as $project | .value.data.targets | keys | map("\($project):\(.)") | .[])") | .[]' .cache/nx/nxdeps.json
         end
     else if test -e workspace.json; and type -q jq
