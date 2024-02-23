@@ -1,14 +1,27 @@
 function __nx_run
-    if test -e nx.json; and type -q jq
-        set -l allTargets
-        for file in (find . -path '*/node_modules/*' -prune -o -name 'project.json' -print)
-            set allTargets $allTargets (jq "{name: .name} as \$savedName | [.targets | to_entries[] | \$savedName.name + \":\" + .key]" $file)
-        end
+    if type -q jq
+        if test -e nx.json
+            # support for both nx types >=17 and <17
+            set -l cacheDirectory (jq -r '.tasksRunnerOptions.default.options.cacheDirectory // .cacheDirectory // ".nx/cache"' nx.json)
 
-        # Combine all results into a single array and output
-        echo $allTargets | jq -r -s 'add | .[]'
-    else if test -e workspace.json; and type -q jq
-        jq -r '.projects | to_entries | map("\(.key as $project | .value.targets | keys | map("\($project):\(.)") | .[])") | .[]' workspace.json
+            if test -e $cacheDirectory/project-graph.json
+                jq -r '.nodes | to_entries | map("\(.key as $project | .value.data.targets | keys | map("\($project):\(.)") | .[])") | .[]' $cacheDirectory/project-graph.json
+            else if test -d $cacheDirectory/nxdeps.json
+                jq -r '.nodes | to_entries | map("\(.key as $project | .value.data.targets | keys | map("\($project):\(.)") | .[])") | .[]' $cacheDirectory/nxdeps.json
+            else
+                # fallback in case of missing cache; manually parse all project.json files (slow!)
+                set -l allTargets
+                for file in (find . -path '*/node_modules/*' -prune -o -name 'project.json' -print)
+                    set allTargets $allTargets (jq "{name: .name} as \$savedName | [.targets | to_entries[] | \$savedName.name + \":\" + .key]" $file)
+                end
+
+                # Combine all results into a single array and output
+                echo $allTargets | jq -r -s 'add | .[]'
+            end
+            # ... this is suport for older versions of nx where there were no project.json files
+        else if test -e workspace.json
+            jq -r '.projects | to_entries | map("\(.key as $project | .value.targets | keys | map("\($project):\(.)") | .[])") | .[]' workspace.json
+        end
     end
 end
 
