@@ -25,41 +25,31 @@ function __nx_run
     end
 end
 
-function __nx_workspace_schematic
-    if test -d tools/schematics
-        # very silly way how to get only folder name in format we want
-        ls -d tools/schematics/*/ | sed 's/.$//' | sed 's/tools\/schematics\///'
-    end
-end
+set -l nx_commands add affected connect create-nx-workspace daemon exec format:check format:write generate graph init list migrate release repair report reset run run-many show view-logs watch
 
-
-set -l nx_commands run generate affected run-many affected:apps affected:libs affected:build affected:test affected:e2e affected:dep-graph print-affected affected:lint dep-graph format:check format:write workspace-lint workspace-schematic migrate report list
-
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a generate -d 'Generate code'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a affected -d 'Run task for affected projects'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a run-many -d 'Run task for multiple projects'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a affected:apps -d 'Print applications affected by changes'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a affected:libs -d 'Print libraries affected by changes'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a affected:build -d 'Build applications and publishable libraries affected by changes'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a affected:test -d 'Test projects affected by changes'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a affected:e2e -d 'Run e2e tests for the applications affected by changes'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a affected:dep-graph -d 'Graph dependencies affected by changes'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a print-affected -d 'Graph execution plan'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a affected:lint -d 'Lint projects affected by changes'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a dep-graph -d 'Graph dependencies within workspace'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a affected -d 'Run target for affected projects'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a connect -d 'Connect workspace to Nx Cloud'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a create-nx-workspace -d 'Create a new Nx workspace'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a daemon -d 'Prints information about the Nx Daemon process or starts a daemon process'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a exec -d 'Executes any command as if it was a target on the project, or an arbitrary command in each package'
 complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a format:check -d 'Check for un-formatted files'
 complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a format:write -d 'Overwrite un-formatted files'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a workspace-lint -d 'Lint workspace or list of files'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a migrate -d 'Creates a migrations file or runs migrations from the migrations file.'
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a report -d 'Reports useful version numbers to copy into the Nx issue template'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a generate -d 'Runs a generator that creates and/or modifies files based on a generator from a collection.'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a graph -d 'Graph dependencies within workspace'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a init -d 'Adds Nx to any type of workspace. It installs nx, creates an nx.json configuration file and optionally sets up remote caching. For more info, check https://nx.dev/recipes/adopting-nx.'
 complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a list -d 'Lists installed plugins, capabilities of installed plugins and other available plugins.'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a migrate -d 'Creates a migrations file or runs migrations from the migrations file.'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a release -d 'Orchestrate versioning and publishing of applications and libraries'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a repair -d 'Repair any configuration that is no longer supported by Nx.'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a report -d 'Reports useful version numbers to copy into the Nx issue template'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a reset -d 'Clears all the cached Nx artifacts and metadata about the workspace and shuts down the Nx Daemon.'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a run -d 'Runs a target defined for your project. Target definitions can be found in the scripts property of the project package.json, or in the targets property of the project project.json file.'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a run-many -d 'Run target for multiple listed projects'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a show -d 'Show information about the workspace (e.g., list of projects)'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a view-logs -d 'Enables you to view and interact with the logs via the advanced analytic UI from Nx Cloud to help you debug your issue. To do this, Nx needs to connect your workspace to Nx Cloud and upload the most recent run details. Only the metrics are uploaded, not the artefacts.'
+complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a watch -d 'Watch for changes within projects, and execute commands'
 
 # run
 complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a run -d 'Run a target for a project'
 complete -f -c nx -n "__fish_seen_subcommand_from run; and not __fish_seen_subcommand_from (__nx_run)" -a "(__nx_run)"
 complete -f -c nx -n "__fish_seen_subcommand_from (__nx_run); and not __fish_seen_subcommand_from --" -a "--"
-
-# workspace-schematic
-complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a workspace-schematic -d 'Runs a workspace schematic from the tools/schematics directory'
-complete -f -c nx -n "__fish_seen_subcommand_from workspace-schematic; and not __fish_seen_subcommand_from (__nx_workspace_schematic)" -a "(__nx_workspace_schematic)"
-complete -f -c nx -n "__fish_seen_subcommand_from (__nx_workspace_schematic); and not __fish_seen_subcommand_from --" -a "--"
