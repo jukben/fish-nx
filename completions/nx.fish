@@ -6,7 +6,7 @@ function __nx_run
 
             if test -e $cacheDirectory/project-graph.json
                 jq -r '.nodes | to_entries | map("\(.key as $project | .value.data.targets | keys | map("\($project):\(.)") | .[])") | .[]' $cacheDirectory/project-graph.json
-            else if test -d $cacheDirectory/nxdeps.json
+            else if test -e $cacheDirectory/nxdeps.json
                 jq -r '.nodes | to_entries | map("\(.key as $project | .value.data.targets | keys | map("\($project):\(.)") | .[])") | .[]' $cacheDirectory/nxdeps.json
             else
                 # fallback in case of missing cache; manually parse all project.json files (slow!)
