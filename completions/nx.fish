@@ -9,16 +9,9 @@ function __nx_run
             else if test -e $cacheDirectory/nxdeps.json
                 jq -r '.nodes | to_entries | map("\(.key as $project | .value.data.targets | keys | map("\($project):\(.)") | .[])") | .[]' $cacheDirectory/nxdeps.json
             else
-                # fallback in case of missing cache; manually parse all project.json files (slow!)
-                set -l allTargets
-                for file in (find . -path '*/node_modules/*' -prune -o -name 'project.json' -print)
-                    set allTargets $allTargets (jq "{name: .name} as \$savedName | [.targets | to_entries[] | \$savedName.name + \":\" + .key]" $file)
-                end
-
-                # Combine all results into a single array and output
-                echo $allTargets | jq -r -s 'add | .[]'
+                # Parallel processing of project.json files using fd for faster file discovery
+                fd --exclude node_modules --type f 'project.json' | xargs cat | jq -sr '[.[] | {name: .name} as $savedName | [.targets | to_entries[] | $savedName.name + ":" + .key]] | add | .[]'
             end
-            # ... this is suport for older versions of nx where there were no project.json files
         else if test -e workspace.json
             jq -r '.projects | to_entries | map("\(.key as $project | .value.targets | keys | map("\($project):\(.)") | .[])") | .[]' workspace.json
         end
