@@ -1,12 +1,12 @@
 # fish-nx
 
-This package contains [Nx (Extensible Dev Tools for Monorepos)](https://nx.dev) completions for [Fish](https://github.com/fish-shell/fish-shell) shell.
+This package provides [Nx (Extensible Dev Tools for Monorepos)](https://nx.dev) completions for the [Fish shell](https://github.com/fish-shell/fish-shell).
 
-## Install
+## Installation
 
-> I recommend to use [Fisher](https://github.com/jorgebucaran/fisher) to install this package
+> It's recommended to use [Fisher](https://github.com/jorgebucaran/fisher) for installing this package.
 
-> This package uses [Jq](https://stedolan.github.io/jq/) so make sure you have it installed. Brew will do on OSX.
+> This package requires [jq](https://stedolan.github.io/jq/) and [fd](https://github.com/sharkdp/fd). Ensure they are installed. On macOS, you can install them using Homebrew.
 
 ```
 fisher install jukben/fish-nx
@@ -14,7 +14,15 @@ fisher install jukben/fish-nx
 
 ## Usage
 
-Make sure you have `nx` installed globally. Then you should be able to leverage the autocomplete (tab).
+Ensure `nx` is installed globally. Once installed, autocomplete (tab completion) should work seamlessly.
+
+You can also set an alias for `nx` to use package managers like `yarn` or `pnpm`:
+
+```
+alias nx='yarn nx'
+# or
+alias nx='pnpm nx'
+```
 
 [![asciicast](https://asciinema.org/a/nNxqT0rJ8H0MikTbrGNhwHTUz.svg)](https://asciinema.org/a/nNxqT0rJ8H0MikTbrGNhwHTUz)
 
