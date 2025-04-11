@@ -1,21 +1,44 @@
-function __nx_run
-    if type -q jq
-        if test -e nx.json
-            # support for both nx types >=17 and <17
-            set -l cacheDirectory (jq -r '.tasksRunnerOptions.default.options.cacheDirectory // .cacheDirectory // ".nx/cache"' nx.json)
+function __parseProjectGraph
+    set -l projectGraphFilePath $argv[1]
+    jq -r '.nodes | to_entries | map("\(.key as $project | .value.data.targets | keys | map("\($project):\(.)") | .[])") | .[]' $projectGraphFilePath
+end
 
-            if test -e $cacheDirectory/project-graph.json
-                jq -r '.nodes | to_entries | map("\(.key as $project | .value.data.targets | keys | map("\($project):\(.)") | .[])") | .[]' $cacheDirectory/project-graph.json
-            else if test -e $cacheDirectory/nxdeps.json
-                jq -r '.nodes | to_entries | map("\(.key as $project | .value.data.targets | keys | map("\($project):\(.)") | .[])") | .[]' $cacheDirectory/nxdeps.json
-            else
-                # Parallel processing of project.json files using fd for faster file discovery
-                fd --exclude node_modules --type f 'project.json' | xargs cat | jq -sr '[.[] | {name: .name} as $savedName | [.targets | to_entries[] | $savedName.name + ":" + .key]] | add | .[]'
-            end
-        else if test -e workspace.json
-            jq -r '.projects | to_entries | map("\(.key as $project | .value.targets | keys | map("\($project):\(.)") | .[])") | .[]' workspace.json
-        end
+
+function __nx_run
+    if not type -q jq
+        return
     end
+
+
+    if test -e nx.json
+        # support for both nx types >=17 and <17
+        set -l cacheDirectory (jq -r '.tasksRunnerOptions.default.options.cacheDirectory // .cacheDirectory // ".nx/cache"' nx.json)
+        set -l nxWorkspaceDataDirectory '.nx/workspace-data'
+
+        set -l graph_files \
+            "$cacheDirectory/project-graph.json" \
+            "$cacheDirectory/nxdeps.json" \
+            "$nxWorkspaceDataDirectory/project-graph.json"
+
+        # Iterate over the list and parse the first existing file
+        for file in $graph_files
+            if test -e $file
+                __parseProjectGraph $file
+                return
+            end
+        end
+
+        if not type -q fd
+            return
+        end
+
+        # Parallel processing of project.json files using fd for faster file discovery
+        fd --exclude node_modules --type f 'project.json' | xargs cat | jq -sr '[.[] | {name: .name} as $savedName | [.targets | to_entries[] | $savedName.name + ":" + .key]] | add | .[]'
+
+    else if test -e workspace.json
+        jq -r '.projects | to_entries | map("\(.key as $project | .value.targets | keys | map("\($project):\(.)") | .[])") | .[]' workspace.json
+    end
+
 end
 
 set -l nx_commands add affected connect create-nx-workspace daemon exec format:check format:write generate graph init list migrate release repair report reset run run-many show view-logs watch
@@ -45,4 +68,4 @@ complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a watch -d 
 # run
 complete -f -c nx -n "not __fish_seen_subcommand_from $nx_commands" -a run -d 'Run a target for a project'
 complete -f -c nx -n "__fish_seen_subcommand_from run; and not __fish_seen_subcommand_from (__nx_run)" -a "(__nx_run)"
-complete -f -c nx -n "__fish_seen_subcommand_from (__nx_run); and not __fish_seen_subcommand_from --" -a "--"
+complete -f -c nx -n "__fish_seen_subcommand_from (__nx_run); and not __fish_seen_subcommand_from --" -a --
